@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "am_stock",
+    'name': "AM stock",
     'author': "Ahmad Salih",
     'category': 'Accounting',
     'version': '0.1',
 
-    'depends': ['base'],
+    'depends': ['base',
+                'mail'],
     # always loaded
     'data': [
         'security/ir.model.access.csv',
-        'views/views.xml',
-        'views/templates.xml',
+        'views/stock_picking_views.xml',
+        'views/menu_views.xml',
     ],
     # only loaded in demonstration mode
     'demo': [
