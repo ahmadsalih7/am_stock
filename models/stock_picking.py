@@ -49,3 +49,4 @@ class Picking(models.Model):
     user_id = fields.Many2one('res.users', string="Responsible",
                               states={'done': [('readonly', True)], 'cancel': [('readonly', True)]},
                               default=lambda self: self.env.user)
+    move_ids = fields.One2many('stock.move', 'picking_id', string="Stock moves")
