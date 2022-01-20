@@ -2,3 +2,4 @@ id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_am_stock_picking,access_am_stock_picking,model_am_stock_picking,base.group_user,1,1,1,1
 access_am_stock_picking_type,access_am_stock_picking_type,model_am_stock_picking_type,base.group_user,1,1,1,1
 access_stock_move,access_stock_move,model_stock_move,base.group_user,1,1,1,1
+access_stock_warehouse,access_stock_warehouse,model_warehouse,base.group_user,1,1,1,1
