@@ -6,7 +6,8 @@
     'version': '0.1',
 
     'depends': ['base',
-                'mail'],
+                'mail',
+                'my_account'],
     # always loaded
     'data': [
         'security/ir.model.access.csv',

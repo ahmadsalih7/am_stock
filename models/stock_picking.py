@@ -2,6 +2,17 @@
 from odoo import api, fields, models, SUPERUSER_ID, _
 
 
+class PickingType(models.Model):
+    _name = "am_stock.picking.type"
+    _description = "Picking Type"
+    _order = 'sequence, id'
+    _check_company_auto = True
+
+    name = fields.Char('Operation Type', required=True)
+    code = fields.Selection([('incoming', 'Receipt'), ('outgoing', 'Delivery'), ('internal', 'Internal Transfer')],
+                            'Type of Operation', required=True)
+
+
 class Picking(models.Model):
     _name = "am_stock.picking"
     _inherit = ['mail.thread', 'mail.activity.mixin']
@@ -26,11 +37,12 @@ class Picking(models.Model):
                            help="Creation Date, usually the time of the order")
     date_done = fields.Datetime('Date of Transfer', copy=False, readonly=True,
                                 help="Date at which the transfer has been processed or cancelled.")
-
+    picking_type_id = fields.Many2one('am_stock.picking.type', 'Operation Type', required=True, readonly=True,
+                                      states={'draft': [('readonly', False)]})
     picking_type_code = fields.Selection([
         ('incoming', 'Vendors'),
         ('outgoing', 'Customers'),
-        ('internal', 'Internal')], readonly=True)
+        ('internal', 'Internal')], related='picking_type_id.code', readonly=True)
     partner_id = fields.Many2one('res.partner', string="Contact",
                                  states={'done': [('readonly', True)], 'cancel': [('readonly', True)]})
     company_id = fields.Many2one('res.company', string='Company', readonly=True, store=True, index=True)
