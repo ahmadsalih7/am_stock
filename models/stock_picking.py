@@ -18,6 +18,12 @@ class PickingType(models.Model):
                                  index=True)
     warehouse_id = fields.Many2one('am_stock.warehouse', 'Warehouse', ondelete='cascade', check_company=True)
 
+    def name_get(self):
+        """ Show company beside type """
+        result = []
+        for rec in self:
+            result.append((rec.id, f'{rec.company_id.name}: {rec.name}'))
+        return result
 
 
 class Picking(models.Model):
