@@ -13,6 +13,7 @@
         'security/ir.model.access.csv',
         'views/stock_picking_views.xml',
         'views/menu_views.xml',
+        'data/stock_data.xml',
     ],
     # only loaded in demonstration mode
     'demo': [

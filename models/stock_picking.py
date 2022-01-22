@@ -11,6 +11,13 @@ class PickingType(models.Model):
     name = fields.Char('Operation Type', required=True)
     code = fields.Selection([('incoming', 'Receipt'), ('outgoing', 'Delivery'), ('internal', 'Internal Transfer')],
                             'Type of Operation', required=True)
+    sequence_id = fields.Many2one('ir.sequence', 'Reference Sequence', check_company=True, copy=False)
+    sequence_code = fields.Char('Code', required=True)
+    barcode = fields.Char('Barcode', copy=False)
+    company_id = fields.Many2one('res.company', 'Company', required=True, default=lambda s: s.env.company.id,
+                                 index=True)
+    warehouse_id = fields.Many2one('am_stock.warehouse', 'Warehouse', ondelete='cascade', check_company=True)
+
 
 
 class Picking(models.Model):

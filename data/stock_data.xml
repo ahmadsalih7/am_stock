@@ -1,0 +1,8 @@
+<odoo>
+    <data>
+        <record id="warehouse0" model="am_stock.warehouse">
+            <field name="partner_id" ref="base.main_partner"/>
+            <field name="code">WH</field>
+        </record>
+    </data>
+</odoo>
