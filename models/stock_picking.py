@@ -5,7 +5,6 @@ from odoo import api, fields, models, SUPERUSER_ID, _
 class PickingType(models.Model):
     _name = "am_stock.picking.type"
     _description = "Picking Type"
-    _order = 'sequence, id'
     _check_company_auto = True
 
     name = fields.Char('Operation Type', required=True)
