@@ -4,7 +4,7 @@ from odoo import api, fields, models, _, SUPERUSER_ID
 
 
 class StockMove(models.Model):
-    _name = "stock.move"
+    _name = "am_stock.move"
     _description = "Stock Move"
     _order = 'sequence, id'
 
