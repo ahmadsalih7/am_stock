@@ -6,9 +6,9 @@ from odoo import api, fields, models, _, SUPERUSER_ID
 class StockMove(models.Model):
     _name = "am_stock.move"
     _description = "Stock Move"
-    _order = 'sequence, id'
 
     name = fields.Char('Description', index=True, required=True)
+    origin = fields.Char("Source Document")
     create_date = fields.Datetime('Creation Date', index=True, readonly=True)
     company_id = fields.Many2one('res.company', 'Company', default=lambda self: self.env.company,
                                  index=True, required=True)
@@ -24,6 +24,9 @@ class StockMove(models.Model):
                                  domain="[('type', 'in', ['product', 'consu']), '|', ('company_id', '=', False), ('company_id', '=', company_id)]",
                                  index=True, required=True,
                                  states={'done': [('readonly', True)]})
+    warehouse_id = fields.Many2one('am_stock.warehouse', 'Warehouse',
+                                   help="Technical field depicting the warehouse to consider for the route selection on the next procurement (if any).")
     product_qty = fields.Float('Real Quantity')
     product_uom_qty = fields.Float('Demand', default=0.0, required=True, states={'done': [('readonly', True)]})
     picking_id = fields.Many2one('am_stock.picking', 'Transfer Reference', states={'done': [('readonly', True)]})
+    picking_type_id = fields.Many2one('am_stock.picking.type', 'Operation Type', check_company=True)

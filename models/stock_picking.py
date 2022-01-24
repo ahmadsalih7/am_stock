@@ -29,7 +29,7 @@ class Picking(models.Model):
     _name = "am_stock.picking"
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _description = "Transfer"
-    _order = "date asc, id desc"
+    _order = "date desc, id asc"
 
     name = fields.Char('Reference', default='/', copy=False, index=True, readonly=True)
     note = fields.Text('Notes')
