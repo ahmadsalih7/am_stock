@@ -62,3 +62,11 @@ class Picking(models.Model):
                               states={'done': [('readonly', True)], 'cancel': [('readonly', True)]},
                               default=lambda self: self.env.user)
     move_ids = fields.One2many('am_stock.move', 'picking_id', string="Stock moves")
+
+    @api.model
+    def create(self, vals):
+        sequence = self.env['am_stock.picking.type'].browse(vals['picking_type_id']).sequence_id
+        if vals.get('name', '/') == '/' :
+            if sequence:
+                vals['name'] = sequence.next_by_id()
+        return super(Picking, self).create(vals)
