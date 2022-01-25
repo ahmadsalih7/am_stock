@@ -30,3 +30,8 @@ class StockMove(models.Model):
     product_uom_qty = fields.Float('Demand', default=0.0, required=True, states={'done': [('readonly', True)]})
     picking_id = fields.Many2one('am_stock.picking', 'Transfer Reference', states={'done': [('readonly', True)]})
     picking_type_id = fields.Many2one('am_stock.picking.type', 'Operation Type', check_company=True)
+
+    def _action_confirm(self):
+        '''Change moves state to confirmed'''
+        for move in self:
+            move.write({'state': 'confirmed'})
