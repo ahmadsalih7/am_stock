@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-from odoo import api, fields, models, SUPERUSER_ID, _
+from odoo import api, fields, models
+from collections import defaultdict
 
 
 class PickingType(models.Model):
@@ -40,7 +41,7 @@ class Picking(models.Model):
         ('assigned', 'Ready'),
         ('done', 'Done'),
         ('cancel', 'Cancelled'),
-    ], string='Status', default='draft', readonyl=True)
+    ], string='Status', readonyl=True, compute='_compute_state', store=True)
     origin = fields.Char('Source Document', index=True,
                          states={'done': [('readonly', True)], 'cancel': [('readonly', True)]},
                          help="Reference of the document")
@@ -66,7 +67,34 @@ class Picking(models.Model):
     @api.model
     def create(self, vals):
         sequence = self.env['am_stock.picking.type'].browse(vals['picking_type_id']).sequence_id
-        if vals.get('name', '/') == '/' :
+        if vals.get('name', '/') == '/':
             if sequence:
                 vals['name'] = sequence.next_by_id()
         return super(Picking, self).create(vals)
+
+    @api.depends('move_ids.state', 'move_ids.picking_id')
+    def _compute_state(self):
+        picking_moves_state_map = defaultdict(dict)
+        picking_move_lines = defaultdict(set)
+        for move in self.env['am_stock.move'].search([('picking_id', 'in', self.ids)]):
+            picking_id = move.picking_id
+            move_state = move.state
+            picking_moves_state_map[picking_id.id].update({
+                'any_draft': picking_moves_state_map[picking_id.id].get('any_draft', False) or move_state == 'draft',
+                'all_cancel': picking_moves_state_map[picking_id.id].get('all_cancel', True) and move_state == 'cancel',
+                'all_cancel_done': picking_moves_state_map[picking_id.id].get('all_cancel_done',
+                                                                              True) and move_state in (
+                                       'cancel', 'done'),
+            })
+            picking_move_lines[picking_id.id].add(move.id)
+        for picking in self:
+            if not picking_moves_state_map[picking.id]:
+                picking.state = 'draft'
+            elif picking_moves_state_map[picking.id]['any_draft']:
+                picking.state = 'draft'
+            elif picking_moves_state_map[picking.id]['all_cancel']:
+                picking.state = 'cancel'
+            elif picking_moves_state_map[picking.id]['all_cancel_done']:
+                picking.state = 'done'
+            else:
+                picking.state = 'assigned'
