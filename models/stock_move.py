@@ -32,6 +32,11 @@ class StockMove(models.Model):
     picking_type_id = fields.Many2one('am_stock.picking.type', 'Operation Type', check_company=True)
 
     def _action_confirm(self):
-        '''Change moves state to confirmed'''
+        ''' Change moves state to confirmed '''
         for move in self:
             move.write({'state': 'confirmed'})
+
+    def _action_assign(self):
+        ''' Change moves state to assigned '''
+        for move in self:
+            move.write({'state': 'assigned'})
