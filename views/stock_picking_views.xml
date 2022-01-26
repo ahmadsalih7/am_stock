@@ -27,6 +27,9 @@
         <field name="arch" type="xml">
             <form string="Overview">
                 <header>
+                    <button name="button_validate"
+                            attrs="{'invisible': ['|', ('state', 'in', ('waiting','confirmed'))]}"
+                            string="Validate" type="object" class="oe_highlight" />
                     <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,assigned,done"/>
                 </header>
                 <sheet>

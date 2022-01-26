@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from odoo import api, fields, models
+from odoo import api, fields, models, _
 from collections import defaultdict
 
 
@@ -98,3 +98,21 @@ class Picking(models.Model):
                 picking.state = 'done'
             else:
                 picking.state = 'assigned'
+
+    def button_validate(self):
+        no_quantities_done = all(move_line.quantity_done == 0.0 for move_line in
+                                 self.move_ids.filtered(lambda m: m.state not in ('done', 'cancel')))
+        if no_quantities_done:
+            view = self.env.ref('am_stock.view_immediate_transfer')
+            wiz = self.env['am_stock.immediate.transfer'].create({'pick_ids': [(4, self.id)]})
+            return {
+                'name': _('Immediate Transfer?'),
+                'type': 'ir.actions.act_window',
+                'view_mode': 'form',
+                'res_model': 'am_stock.immediate.transfer',
+                'views': [(view.id, 'form')],
+                'view_id': view.id,
+                'target': 'new',
+                'res_id': wiz.id,
+                'context': self.env.context,
+            }
