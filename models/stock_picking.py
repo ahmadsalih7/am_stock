@@ -116,3 +116,7 @@ class Picking(models.Model):
                 'res_id': wiz.id,
                 'context': self.env.context,
             }
+
+    def action_done(self):
+        self.write({'date_done': fields.Datetime.now()})
+        self.write({'state': 'done'})
