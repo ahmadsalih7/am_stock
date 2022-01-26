@@ -28,7 +28,7 @@
             <form string="Overview">
                 <header>
                     <button name="button_validate"
-                            attrs="{'invisible': ['|', ('state', 'in', ('waiting','confirmed'))]}"
+                            attrs="{'invisible': [('state', 'not in', ('draft','waiting','confirmed','assigned'))]}"
                             string="Validate" type="object" class="oe_highlight" />
                     <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,assigned,done"/>
                 </header>
