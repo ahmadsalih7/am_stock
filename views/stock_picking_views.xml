@@ -46,6 +46,7 @@
                         </group>
                         <group>
                             <field name="date"/>
+                            <field name="origin"/>
                         </group>
                     </group>
                     <notebook>
