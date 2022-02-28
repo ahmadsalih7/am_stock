@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from odoo import api, fields, models, _
 from collections import defaultdict
+import time
+from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT
 
 
 class PickingType(models.Model):
@@ -18,12 +20,37 @@ class PickingType(models.Model):
                                  index=True)
     warehouse_id = fields.Many2one('am_stock.warehouse', 'Warehouse', ondelete='cascade', check_company=True)
 
+    count_picking_draft = fields.Integer(compute='_compute_picking_count')
+    count_picking_ready = fields.Integer(compute='_compute_picking_count')
+    count_picking = fields.Integer(compute='_compute_picking_count')
+    count_picking_waiting = fields.Integer(compute='_compute_picking_count')
+    count_picking_late = fields.Integer(compute='_compute_picking_count')
+
     def name_get(self):
         """ Show company beside type """
         result = []
         for rec in self:
             result.append((rec.id, f'{rec.company_id.name}: {rec.name}'))
         return result
+
+    def _compute_picking_count(self):
+        domains = {
+            'count_picking_draft': [('state', '=', 'draft')],
+            'count_picking_waiting': [('state', 'in', ('confirmed', 'waiting'))],
+            'count_picking_ready': [('state', '=', 'assigned')],
+            'count_picking': [('state', 'in', ('assigned', 'waiting', 'confirmed'))],
+        }
+        for field in domains:
+            data = self.env['am_stock.picking'].read_group(domains[field] +
+                                                           [('state', 'not in', ('done', 'cancel')),
+                                                            ('picking_type_id', 'in', self.ids)],
+                                                           ['picking_type_id'], ['picking_type_id'])
+            count = {
+                x['picking_type_id'][0]: x['picking_type_id_count']
+                for x in data if x['picking_type_id']
+            }
+            for record in self:
+                record[field] = count.get(record.id, 0)
 
 
 class Picking(models.Model):

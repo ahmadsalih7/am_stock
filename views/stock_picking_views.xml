@@ -1,5 +1,11 @@
 <odoo>
     <record model="ir.actions.act_window" id="action_overview">
+        <field name="name">Overview</field>
+        <field name="res_model">am_stock.picking.type</field>
+        <field name="view_mode">kanban</field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_inventory_picking">
         <field name="name">Inventory Picking</field>
         <field name="res_model">am_stock.picking</field>
         <field name="view_mode">tree,form</field>
@@ -29,7 +35,7 @@
                 <header>
                     <button name="button_validate"
                             attrs="{'invisible': [('state', 'not in', ('draft','waiting','confirmed','assigned'))]}"
-                            string="Validate" type="object" class="oe_highlight" />
+                            string="Validate" type="object" class="oe_highlight"/>
                     <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,assigned,done"/>
                 </header>
                 <sheet>
@@ -67,4 +73,29 @@
             </form>
         </field>
     </record>
+
+    <record id="view_am_stock_picking_type_kanban" model="ir.ui.view">
+        <field name="name">stock.picking.type.kanban</field>
+        <field name="model">am_stock.picking.type</field>
+        <field name="arch" type="xml">
+            <kanban class="oe_background_grey o_kanban_dashboard o_emphasize_colors o_stock_kanban" create="0">
+                <field name="name"/>
+                <field name="code" readonly="1"/>
+                <field name="count_picking_ready"/>
+                <field name="count_picking_draft"/>
+                <field name="count_picking_waiting"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div>
+                            <field name="name"/>
+                            <field name="count_picking_ready"/>
+                            <field name="count_picking_draft"/>
+                            <field name="count_picking_waiting"/>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
 </odoo>
