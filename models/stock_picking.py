@@ -52,6 +52,9 @@ class PickingType(models.Model):
             for record in self:
                 record[field] = count.get(record.id, 0)
 
+    def get_stock_picking_action_picking_type(self):
+        print('got here')
+
 
 class Picking(models.Model):
     _name = "am_stock.picking"
