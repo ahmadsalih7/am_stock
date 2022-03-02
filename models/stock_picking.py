@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from odoo import api, fields, models, _
 from collections import defaultdict
+from ast import literal_eval
 import time
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT
 
@@ -53,7 +54,14 @@ class PickingType(models.Model):
                 record[field] = count.get(record.id, 0)
 
     def get_stock_picking_action_picking_type(self):
-        print('got here')
+        action = self.env.ref('am_stock.action_stock_picking').read()[0]
+        context = {
+            'search_default_picking_type_id': [self.id],
+        }
+        action_context = literal_eval(action['context'])
+        context = {**action_context, **context}
+        action['context'] = context
+        return action
 
 
 class Picking(models.Model):
