@@ -119,7 +119,39 @@
                                             <field name="name"/>
                                         </a>
                                     </div>
+                                    <div class="o_secondary">
+                                        <field class="o_secondary" name="warehouse_id" readonly="1"/>
+                                    </div>
+                                    <div class="o_kanban_manage_button_section" t-if="!selection_mode">
+                                        <a class="o_kanban_manage_toggle_button" href="#">
+                                            <i class="fa fa-ellipsis-v"/>
+                                        </a>
+                                    </div>
                                 </div>
+                            </div>
+                            <div class="container o_kanban_card_content" t-if="!selection_mode">
+                                <div class="row">
+                                    <div class="col-6 o_kanban_primary_left">
+                                        <button class="btn btn-primary" name="get_action_picking_tree_ready"
+                                                type="object">
+                                            <span t-if="record.code.raw_value =='incoming'">
+                                                <t t-esc="record.count_picking_ready.value"/>
+                                                To Process
+                                            </span>
+                                            <span t-if="record.code.raw_value =='outgoing'">
+                                                <t t-esc="record.count_picking_ready.value"/>
+                                                To Process
+                                            </span>
+                                            <span t-if="record.code.raw_value =='internal'">
+                                                <t t-esc="record.count_picking_ready.value"/>
+                                                To Process
+                                            </span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="container o_kanban_card_manage_pane dropdown-menu" role="menu">
+                                <h>Test</h>
                             </div>
                         </div>
                     </t>
