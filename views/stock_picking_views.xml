@@ -17,6 +17,8 @@
         <field name="arch" type="xml">
             <search string="Picking Lists">
                 <field name="picking_type_id"/>
+                <filter name="available" string="Ready" domain="[('state', 'in', ('assigned', 'partially_available'))]"
+                        help="Assigned Moves"/>
                 <group expand="0" string="Group By">
                     <filter string="Operation Type" name="picking_type" domain="[]"
                             context="{'group_by': 'picking_type_id'}"/>
@@ -33,6 +35,24 @@
         <field name="context">{}</field>
         <field name="domain"></field>
         <field name="search_view_id" ref="view_picking_internal_search"/>
+    </record>
+
+    <record id="action_picking_tree_ready" model="ir.actions.act_window">
+        <field name="name">To Do</field>
+        <field name="res_model">am_stock.picking</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_mode">tree,kanban,form</field>
+        <field name="domain"></field>
+        <field name="context">{'search_default_available': 1}</field>
+        <field name="search_view_id" ref="view_picking_internal_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new transfer
+            </p>
+            <p>
+                Transfers allow you to move products from one location to another.
+            </p>
+        </field>
     </record>
 
 
