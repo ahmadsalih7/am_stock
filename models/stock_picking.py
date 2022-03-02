@@ -53,8 +53,8 @@ class PickingType(models.Model):
             for record in self:
                 record[field] = count.get(record.id, 0)
 
-    def get_stock_picking_action_picking_type(self):
-        action = self.env.ref('am_stock.action_stock_picking').read()[0]
+    def _get_action(self, action_xmlid):
+        action = self.env.ref(action_xmlid).read()[0]
         context = {
             'search_default_picking_type_id': [self.id],
         }
@@ -62,6 +62,12 @@ class PickingType(models.Model):
         context = {**action_context, **context}
         action['context'] = context
         return action
+
+    def get_stock_picking_action_picking_type(self):
+        return self._get_action('am_stock.action_stock_picking')
+
+    def get_action_picking_tree_ready(self):
+        return self._get_action('am_stock.action_picking_tree_ready')
 
 
 class Picking(models.Model):
