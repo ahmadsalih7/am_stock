@@ -106,7 +106,7 @@ class Picking(models.Model):
     user_id = fields.Many2one('res.users', string="Responsible",
                               states={'done': [('readonly', True)], 'cancel': [('readonly', True)]},
                               default=lambda self: self.env.user)
-    move_ids = fields.One2many('am_stock.move', 'picking_id', string="Stock moves")
+    move_lines = fields.One2many('am_stock.move', 'picking_id', string="Stock moves")
 
     @api.model
     def create(self, vals):
@@ -116,7 +116,7 @@ class Picking(models.Model):
                 vals['name'] = sequence.next_by_id()
         return super(Picking, self).create(vals)
 
-    @api.depends('move_ids.state', 'move_ids.picking_id')
+    @api.depends('move_lines.state', 'move_lines.picking_id')
     def _compute_state(self):
         picking_moves_state_map = defaultdict(dict)
         picking_move_lines = defaultdict(set)
@@ -145,7 +145,7 @@ class Picking(models.Model):
 
     def button_validate(self):
         no_quantities_done = all(move_line.quantity_done == 0.0 for move_line in
-                                 self.move_ids.filtered(lambda m: m.state not in ('done', 'cancel')))
+                                 self.move_lines.filtered(lambda m: m.state not in ('done', 'cancel')))
         if no_quantities_done:
             view = self.env.ref('am_stock.view_immediate_transfer')
             wiz = self.env['am_stock.immediate.transfer'].create({'pick_ids': [(4, self.id)]})

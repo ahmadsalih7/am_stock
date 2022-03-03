@@ -102,7 +102,7 @@
                     </group>
                     <notebook>
                         <page string="Operations">
-                            <field name="move_ids" mode="tree">
+                            <field name="move_lines" mode="tree">
                                 <tree string="Stock Moves" editable="bottom">
                                     <field name="company_id" invisible="1"/>
                                     <field name="name" invisible="1"/>

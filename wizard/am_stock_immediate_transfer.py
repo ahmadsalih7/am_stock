@@ -14,7 +14,7 @@ class StockImmediateTransfer(models.TransientModel):
     def process(self):
         pick_to_do = self.env['am_stock.picking']
         for picking in self.pick_ids:
-            for move in picking.move_ids.filtered(lambda m: m.state not in ['done', 'cancel']):
+            for move in picking.move_lines.filtered(lambda m: m.state not in ['done', 'cancel']):
                 move.quantity_done = move.product_quantity
             pick_to_do |= picking
         if pick_to_do:
