@@ -26,6 +26,10 @@ class StockMove(models.Model):
                                  states={'done': [('readonly', True)]})
     warehouse_id = fields.Many2one('am_stock.warehouse', 'Warehouse',
                                    help="Technical field depicting the warehouse to consider for the route selection on the next procurement (if any).")
+    date_expected = fields.Datetime(
+        'Expected Date', default=fields.Datetime.now, index=True, required=True,
+        states={'done': [('readonly', True)]},
+        help="Scheduled date for the processing of this move")
     quantity_done = fields.Float('Quantity Done')
     product_quantity = fields.Float('Demand', default=0.0, required=True, states={'done': [('readonly', True)]})
     picking_id = fields.Many2one('am_stock.picking', 'Transfer Reference', states={'done': [('readonly', True)]})

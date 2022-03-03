@@ -92,6 +92,18 @@ class Picking(models.Model):
     date = fields.Datetime('Creation Date', default=fields.Datetime.now, index=True, tracking=True,
                            states={'done': [('readonly', True)], 'cancel': [('readonly', True)]},
                            help="Creation Date, usually the time of the order")
+
+    move_type = fields.Selection([
+        ('direct', 'As soon as possible'), ('one', 'When all products are ready')], 'Shipping Policy',
+        default='direct', required=True,
+        states={'done': [('readonly', True)], 'cancel': [('readonly', True)]},
+        help="It specifies goods to be deliver partially or all at once")
+    scheduled_date = fields.Datetime(
+        'Scheduled Date', compute='_compute_scheduled_date', inverse='_set_scheduled_date', store=True,
+        index=True, default=fields.Datetime.now, tracking=True,
+        states={'done': [('readonly', True)], 'cancel': [('readonly', True)]},
+        help="Scheduled time for the first part of the shipment to be processed. Setting manually a value here would set it as expected date for all the stock moves.")
+
     date_done = fields.Datetime('Date of Transfer', copy=False, readonly=True,
                                 help="Date at which the transfer has been processed or cancelled.")
     picking_type_id = fields.Many2one('am_stock.picking.type', 'Operation Type', required=True, readonly=True,
@@ -142,6 +154,20 @@ class Picking(models.Model):
                 picking.state = 'done'
             else:
                 picking.state = 'assigned'
+
+    @api.depends('move_lines.date_expected')
+    def _compute_scheduled_date(self):
+        for picking in self:
+            if picking.move_type == 'direct':
+                picking.scheduled_date = min(picking.move_lines.mapped('date_expected') or [fields.Datetime.now()])
+            else:
+                picking.scheduled_date = max(picking.move_lines.mapped('date_expected') or [fields.Datetime.now()])
+
+    def _set_scheduled_date(self):
+        for picking in self:
+            if picking.state in ('done', 'cancel'):
+                raise UserError(_("You cannot change the Scheduled Date on a done or cancelled transfer."))
+            picking.move_lines.write({'date_expected': picking.scheduled_date})
 
     def button_validate(self):
         no_quantities_done = all(move_line.quantity_done == 0.0 for move_line in

@@ -94,9 +94,11 @@
                             <field name="partner_id"/>
                             <field name="picking_type_id"/>
                             <field name="company_id" invisible="1"/>
+                            <field name="move_type" invisible="1"/>
                         </group>
                         <group>
-                            <field name="date"/>
+                            <field name="scheduled_date"/>
+                            <field name="date" invisible="1"/>
                             <field name="origin"/>
                         </group>
                     </group>
@@ -105,6 +107,7 @@
                             <field name="move_lines" mode="tree">
                                 <tree string="Stock Moves" editable="bottom">
                                     <field name="company_id" invisible="1"/>
+                                    <field name="date_expected" invisible="1"/>
                                     <field name="name" invisible="1"/>
                                     <field name="state" invisible="1" readonly="0"/>
                                     <field name="product_id"/>
