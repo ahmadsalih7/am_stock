@@ -40,6 +40,9 @@ class PickingType(models.Model):
             'count_picking_waiting': [('state', 'in', ('confirmed', 'waiting'))],
             'count_picking_ready': [('state', '=', 'assigned')],
             'count_picking': [('state', 'in', ('assigned', 'waiting', 'confirmed'))],
+            'count_picking_late': [('scheduled_date', '<', time.strftime(DEFAULT_SERVER_DATETIME_FORMAT)),
+                                   ('state', 'in', ('assigned', 'waiting', 'confirmed'))],
+
         }
         for field in domains:
             data = self.env['am_stock.picking'].read_group(domains[field] +
@@ -68,6 +71,9 @@ class PickingType(models.Model):
 
     def get_action_picking_tree_ready(self):
         return self._get_action('am_stock.action_picking_tree_ready')
+
+    def get_action_picking_tree_late(self):
+        return self._get_action('am_stock.action_picking_tree_late')
 
 
 class Picking(models.Model):

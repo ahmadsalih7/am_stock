@@ -19,6 +19,10 @@
                 <field name="picking_type_id"/>
                 <filter name="available" string="Ready" domain="[('state', 'in', ('assigned', 'partially_available'))]"
                         help="Assigned Moves"/>
+                <filter name="late" string="Late"
+                        domain="[('scheduled_date','&lt;', time.strftime('%%Y-%%m-%%d %%H:%%M:%%S')), ('state', 'in', ('assigned', 'waiting', 'confirmed'))]"
+                        help="Transfers that are late on scheduled time"/>
+                <separator/>
                 <group expand="0" string="Group By">
                     <filter string="Operation Type" name="picking_type" domain="[]"
                             context="{'group_by': 'picking_type_id'}"/>
@@ -55,6 +59,24 @@
         </field>
     </record>
 
+    <record id="action_picking_tree_late" model="ir.actions.act_window">
+        <field name="name">Late Transfers</field>
+        <field name="res_model">am_stock.picking</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_mode">tree,kanban,form</field>
+        <field name="domain"></field>
+        <field name="context">{'search_default_late': 1}</field>
+        <field name="search_view_id" ref="view_picking_internal_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new transfer
+            </p>
+            <p>
+                Transfers allow you to move products from one location to another.
+            </p>
+        </field>
+    </record>
+
 
     <!-- Stock.Picking Tree View-->
 
@@ -63,7 +85,7 @@
         <field name="model">am_stock.picking</field>
         <field name="arch" type="xml">
             <tree decoration-info="state == 'draft'" decoration-muted="state == 'cancel'"
-                      decoration-danger="state not in ('cancel', 'done') and scheduled_date &lt; current_date">
+                  decoration-danger="state not in ('cancel', 'done') and scheduled_date &lt; current_date">
                 <field name="name"/>
                 <field name="partner_id"/>
                 <field name="date"/>
@@ -173,10 +195,23 @@
                                             </span>
                                         </button>
                                     </div>
+                                    <div class="col-6 o_kanban_primary_right">
+                                        <div t-if="record.count_picking_late.raw_value > 0" class="row">
+                                            <div class="col-9">
+                                                <a class="oe_kanban_stock_picking_type_list"
+                                                   name="get_action_picking_tree_late" type="object">
+                                                    Late
+                                                </a>
+                                            </div>
+                                            <div class="col-3">
+                                                <field name="count_picking_late"/>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="container o_kanban_card_manage_pane dropdown-menu" role="menu">
-                                <h>Test</h>
+                                <div class="container o_kanban_card_manage_pane dropdown-menu" role="menu">
+                                    <h>Test</h>
+                                </div>
                             </div>
                         </div>
                     </t>
