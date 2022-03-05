@@ -75,6 +75,9 @@ class PickingType(models.Model):
     def get_action_picking_tree_late(self):
         return self._get_action('am_stock.action_picking_tree_late')
 
+    def get_action_picking_tree_waiting(self):
+        return self._get_action('stock.action_picking_tree_waiting')
+
 
 class Picking(models.Model):
     _name = "am_stock.picking"

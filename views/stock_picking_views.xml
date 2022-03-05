@@ -22,6 +22,8 @@
                 <filter name="late" string="Late"
                         domain="[('scheduled_date','&lt;', time.strftime('%%Y-%%m-%%d %%H:%%M:%%S')), ('state', 'in', ('assigned', 'waiting', 'confirmed'))]"
                         help="Transfers that are late on scheduled time"/>
+                <filter name="waiting" string="Waiting" domain="[('state', 'in', ('confirmed', 'waiting'))]"
+                        help="Waiting Moves"/>
                 <separator/>
                 <group expand="0" string="Group By">
                     <filter string="Operation Type" name="picking_type" domain="[]"
@@ -66,6 +68,24 @@
         <field name="view_mode">tree,kanban,form</field>
         <field name="domain"></field>
         <field name="context">{'search_default_late': 1}</field>
+        <field name="search_view_id" ref="view_picking_internal_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new transfer
+            </p>
+            <p>
+                Transfers allow you to move products from one location to another.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_picking_tree_waiting" model="ir.actions.act_window">
+        <field name="name">Waiting Transfers</field>
+        <field name="res_model">am_stock.picking</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_mode">tree,kanban,form</field>
+        <field name="domain"></field>
+        <field name="context">{'search_default_waiting': 1}</field>
         <field name="search_view_id" ref="view_picking_internal_search"/>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
@@ -206,6 +226,16 @@
                                             <div class="col-3">
                                                 <field name="count_picking_late"/>
                                             </div>
+                                        </div>
+                                    </div>
+                                    <div t-if="record.count_picking_waiting.raw_value > 0" class="row">
+                                        <div class="col-9">
+                                            <a name="get_action_picking_tree_waiting" type="object">
+                                                Waiting
+                                            </a>
+                                        </div>
+                                        <div class="col-3">
+                                            <field name="count_picking_waiting"/>
                                         </div>
                                     </div>
                                 </div>
