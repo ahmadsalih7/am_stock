@@ -62,12 +62,14 @@
         <field name="name">am_stock.picking.tree</field>
         <field name="model">am_stock.picking</field>
         <field name="arch" type="xml">
-            <tree>
+            <tree decoration-info="state == 'draft'" decoration-muted="state == 'cancel'"
+                      decoration-danger="state not in ('cancel', 'done') and scheduled_date &lt; current_date">
                 <field name="name"/>
                 <field name="partner_id"/>
                 <field name="date"/>
                 <field name="origin"/>
                 <field name="state"/>
+                <field name="scheduled_date" invisible="1"/>
             </tree>
         </field>
     </record>
