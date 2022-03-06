@@ -20,7 +20,7 @@ class StockMove(models.Model):
         ('assigned', 'Available'),
         ('done', 'Done')], string='Status',
         copy=False, default='draft', index=True, readonly=True)
-    product_id = fields.Many2one('my_product.template', 'Product', check_company=True,
+    product_id = fields.Many2one('product.product', 'Product', check_company=True,
                                  domain="[('type', 'in', ['product', 'consu']), '|', ('company_id', '=', False), ('company_id', '=', company_id)]",
                                  index=True, required=True,
                                  states={'done': [('readonly', True)]})

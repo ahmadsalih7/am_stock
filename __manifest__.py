@@ -7,7 +7,8 @@
 
     'depends': ['base',
                 'mail',
-                'my_account'],
+                'my_account',
+                'product'],
     # always loaded
     'data': [
         'security/ir.model.access.csv',
