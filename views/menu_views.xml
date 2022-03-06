@@ -1,4 +1,6 @@
 <odoo>
     <menuitem id="am_stock_menu" name="Inventory" sequence="25" web_icon="am_purchase,static/description/icon.png"/>
     <menuitem id="overview_menu" name="Overview" parent="am_stock_menu" sequence="1" action="action_overview"/>
+    <menuitem id="operation_menu" name="Operation" parent="am_stock_menu" sequence="2"/>
+    <menuitem id="transfers_menu" name="Transfers" parent="operation_menu" sequence="1" action="action_inventory_picking"/>
 </odoo>
